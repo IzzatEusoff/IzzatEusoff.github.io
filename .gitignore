@@ -1,0 +1,21 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Dependencies & Build
+node_modules/
+.npm/
+
+# Environment & Secrets
+.env
+.env.*
+*.local
+
+# Backups & Temp Files
+*.bak
+*.tmp
+*.swp
+*~
+
