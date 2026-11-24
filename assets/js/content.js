@@ -3,7 +3,7 @@
 // Change these links in one place.
 var LINKEDIN_CERTS_URL = "https://www.linkedin.com/in/izzatanis/details/certifications/";
 var LINKEDIN_HONORS_URL = "https://www.linkedin.com/in/izzatanis/details/honors/";
-var FORMSPREE_ENDPOINT = "[[https://formspree.io/f/mnpdorwy]]";
+var FORMSPREE_ENDPOINT = "https://formspree.io/f/mnpdorwy";
 
 window.CONTENT = {
   formEndpoint: FORMSPREE_ENDPOINT,
