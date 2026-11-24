@@ -74,11 +74,12 @@ The contact form is wired to `FORM_ENDPOINT = "[[FORM_ENDPOINT]]"` in `assets/js
 | `[[CREDLY_BADGE_URL]]` | Cisco CyberOps `verifyUrl` | Falls back to LinkedIn list page until set |
 | `[[OPSWAT_VERIFY_URL or empty]]` | OPSWAT `verifyUrl` | Plain text until set |
 | `[[CONFIRM level]]` | Governance skills | State as familiarity, not certification |
+| `assets/docs/resume.pdf` | file | Replace placeholder with sanitised PDF |
 
-## 4. Replacing and sanitising the profile photo
+## 4. Replacing and sanitising the profile photo & resume
 
 ### Profile Photo (`assets/img/photo.jpg`)
-The site displays `./assets/img/photo.jpg` in the hero section. If the file is missing or fails to load, an error event listener in `main.js` automatically removes the photo container and expands the hero text to full width without displaying any broken image icon.
+The site displays `./assets/img/photo.jpg` in the hero section. If the file is missing or fails to load, `onerror` automatically hides the photo container and expands the hero text to full width without displaying any broken image icon.
 
 To replace with your own photo:
 1. **Crop & Resize**: Crop to a 1:1 square aspect ratio and resize to 560×560 px (or 280×280 px) JPEG:
@@ -97,8 +98,13 @@ To replace with your own photo:
    # Verify: no GPS coordinates, camera model, lens serial, or creation timestamps appear
    ```
 
-### Resume Publishing Policy
-**Note on Resume Privacy:** No resume PDF or file is published on this site by design. To prevent automated scraping of contact numbers, addresses, and referee information, full resume credentials are provided directly to recruiters upon request via LinkedIn or the contact form.
+### Resume PDF (`assets/docs/resume.pdf`)
+Remove phone, address, IC, DOB and references from the source document *before* exporting. Then strip metadata:
+```bash
+exiftool -all= -overwrite_original assets/docs/resume.pdf
+qpdf --linearize --replace-input assets/docs/resume.pdf   # optional: drops incremental-update history
+```
+Re-open the PDF, search for "+60", "@" and digits patterns, and check Document Properties (Author field).
 
 ## 5. Optional: keep the site private (noindex)
 In `index.html`, `<meta name="robots" content="noindex, nofollow">` is currently enabled. For stronger privacy also add a `robots.txt` with `User-agent: *` / `Disallow: /`. Remove both when ready to go public. (This only discourages search engines; it is not access control.)
@@ -106,13 +112,14 @@ In `index.html`, `<meta name="robots" content="noindex, nofollow">` is currently
 ## 6. Pre-publish privacy checklist
 Run from the site folder (PowerShell):
 ```powershell
-Select-String -Path index.html,assets\js\*.js,assets\css\*.css -Pattern '\+[0-9]{2}','\b01\d[- ]?\d{7,8}\b','[\w.+-]+@[\w-]+\.[\w.]+'
+Select-String -Path index.html,assets\js\*.js,assets\css\*.css,README.md -Pattern '\+60','\b01\d[- ]?\d{7,8}\b','[\w.+-]+@[\w-]+\.[\w.]+','mailto:'
 Select-String -Path index.html,assets\js\*.js -Pattern '<FILM TITLE>','<IC NUMBER>','<REFERENCE NAMES>'
-Get-ChildItem -Recurse assets | Where-Object Extension -match 'jpg|jpeg|png'
+Get-ChildItem -Recurse assets | Where-Object Extension -match 'jpg|jpeg|png|pdf'
 ```
-- [ ] No phone patterns, email addresses, or direct mail links in the source files
+- [ ] No phone patterns, `+60`, email addresses or `mailto:` in the source (the first command should return nothing, aside from this README's own examples)
 - [ ] IC number, film title and references' names return no matches (fill in the real values in the second command; do not save them in the repo)
-- [ ] `/assets` contains only: `favicon.svg`, `og-image.png`, and `photo.jpg`. Zero PDF files or certificate scans exist in the repository
+- [ ] `/assets` contains only: `og-image.png`, `photo.jpg`, and the sanitised `resume.pdf`. No certificate scans
 - [ ] Every external link has `target="_blank" rel="noopener noreferrer"` (all are created via one helper in `main.js`; check in DevTools: `document.querySelectorAll('a[target=_blank]:not([rel~=noopener])')` returns 0)
 - [ ] No `[[` tokens visible on the live page
+- [ ] Resume PDF opened and checked, metadata stripped
 - [ ] Lighthouse run (Chrome DevTools) shows 90+ for all four categories

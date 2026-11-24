@@ -53,10 +53,141 @@
   }
   function mount(id, kids, cls) {
     var s = doc.getElementById(id);
+    if (!s) return null;
+    var existing = s.querySelector(".wrap");
+    if (existing) {
+      return existing;
+    }
     var w = el("div", { class: "wrap reveal" + (cls ? " " + cls : "") }, kids);
     s.appendChild(w);
     return w;
   }
+
+  /* ---------- lightbox modal ---------- */
+  var lightbox = el("div", {
+    class: "lightbox-modal",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-label": "Image preview",
+    hidden: ""
+  });
+  var lbBackdrop = el("div", { class: "lightbox-backdrop" });
+  var lbContent = el("div", { class: "lightbox-content" });
+  var lbImg = el("img", { class: "lightbox-img", alt: "" });
+  var lbClose = el("button", {
+    type: "button",
+    class: "lightbox-close",
+    "aria-label": "Close preview",
+    html: "&times;"
+  });
+  var lbPrev = el("button", {
+    type: "button",
+    class: "lightbox-nav prev",
+    "aria-label": "Previous image",
+    html: "&#8249;"
+  });
+  var lbNext = el("button", {
+    type: "button",
+    class: "lightbox-nav next",
+    "aria-label": "Next image",
+    html: "&#8250;"
+  });
+  var lbCaption = el("div", { class: "lightbox-caption" });
+
+  lbContent.appendChild(lbImg);
+  lightbox.appendChild(lbBackdrop);
+  lightbox.appendChild(lbClose);
+  lightbox.appendChild(lbPrev);
+  lightbox.appendChild(lbNext);
+  lightbox.appendChild(lbContent);
+  lightbox.appendChild(lbCaption);
+  doc.body.appendChild(lightbox);
+
+  var currentGallery = null;
+  var currentGalleryIdx = 0;
+
+  function updateGalleryDisplay() {
+    if (!currentGallery || currentGallery.length <= 1) {
+      lbPrev.style.display = "none";
+      lbNext.style.display = "none";
+      return;
+    }
+    lbPrev.style.display = "flex";
+    lbNext.style.display = "flex";
+    var cur = currentGallery[currentGalleryIdx];
+    lbImg.src = cur.src;
+    lbImg.alt = cur.caption || "Gallery image";
+    lbCaption.textContent = "(" + (currentGalleryIdx + 1) + " / " + currentGallery.length + ") " + (cur.caption || cur.tag || "");
+    lbCaption.style.display = "block";
+  }
+
+  function nextGalleryItem(e) {
+    if (e) e.stopPropagation();
+    if (!currentGallery || currentGallery.length <= 1) return;
+    currentGalleryIdx = (currentGalleryIdx + 1) % currentGallery.length;
+    updateGalleryDisplay();
+  }
+
+  function prevGalleryItem(e) {
+    if (e) e.stopPropagation();
+    if (!currentGallery || currentGallery.length <= 1) return;
+    currentGalleryIdx = (currentGalleryIdx - 1 + currentGallery.length) % currentGallery.length;
+    updateGalleryDisplay();
+  }
+
+  lbPrev.addEventListener("click", prevGalleryItem);
+  lbNext.addEventListener("click", nextGalleryItem);
+
+  function openLightbox(src, alt, gallery, idx) {
+    if (gallery && gallery.length) {
+      currentGallery = gallery;
+      currentGalleryIdx = typeof idx === "number" ? idx : 0;
+      updateGalleryDisplay();
+    } else {
+      currentGallery = null;
+      currentGalleryIdx = 0;
+      lbImg.src = src;
+      lbImg.alt = alt || "Enlarged photo";
+      lbPrev.style.display = "none";
+      lbNext.style.display = "none";
+      if (alt) {
+        lbCaption.textContent = alt;
+        lbCaption.style.display = "block";
+      } else {
+        lbCaption.style.display = "none";
+      }
+    }
+    lightbox.hidden = false;
+    void lightbox.offsetWidth;
+    lightbox.classList.add("active");
+    doc.body.style.overflow = "hidden";
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("active");
+    setTimeout(function () {
+      if (!lightbox.classList.contains("active")) {
+        lightbox.hidden = true;
+        lbImg.src = "";
+        currentGallery = null;
+        doc.body.style.overflow = "";
+      }
+    }, 200);
+  }
+
+  lightbox.addEventListener("click", function (e) {
+    if (e.target === lightbox || e.target === lbBackdrop || e.target === lbContent || e.target === lbClose) {
+      closeLightbox();
+    }
+  });
+
+  doc.addEventListener("keydown", function (e) {
+    if (!lightbox.hidden) {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowRight") nextGalleryItem();
+      else if (e.key === "ArrowLeft") prevGalleryItem();
+    }
+  });
 
   /* ---------- hero ---------- */
   var S = C.site;
@@ -71,10 +202,13 @@
     typed.appendChild(el("span", { class: "caret", "aria-hidden": "true" }));
     left.appendChild(typed);
     left.appendChild(el("p", { class: "lead", text: S.oneLiner }));
-    left.appendChild(el("p", { class: "loc", text: S.location + (S.openToRelocate ? " | Open to relocate" : "") }));
+    left.appendChild(el("p", { class: "loc" }, [
+      S.location + (S.openToRelocate ? " | Open to relocate" : ""),
+      " · ",
+      el("a", { href: "#contact", text: "Contact info" })
+    ]));
     left.appendChild(el("div", { class: "btns" }, [
       el("a", { class: "btn primary", href: "#featured", text: "View Featured Project" }),
-      el("a", { class: "btn", href: "#contact", text: "Request Resume" }),
       el("a", { class: "btn", href: "#contact", text: "Contact Me" })
     ]));
     left.appendChild(socials());
@@ -105,16 +239,57 @@
       }
       if (!failed) {
         photoWrap.appendChild(img);
+        photoWrap.style.cursor = "pointer";
+        photoWrap.setAttribute("role", "button");
+        photoWrap.setAttribute("tabindex", "0");
+        photoWrap.setAttribute("title", "Click to enlarge");
+        photoWrap.setAttribute("aria-label", "Enlarge profile photo");
+        photoWrap.addEventListener("click", function () {
+          openLightbox(S.photo, S.photoAlt);
+        });
+        photoWrap.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openLightbox(S.photo, S.photoAlt);
+          }
+        });
         grid.appendChild(photoWrap);
       }
     }
     grid.appendChild(left);
-    doc.getElementById("heroMount").appendChild(grid);
+    var heroMount = doc.getElementById("heroMount");
+    if (heroMount && heroMount.children.length === 0) {
+      heroMount.appendChild(grid);
+    } else {
+      // Hydrate pre-rendered profile photo
+      var prePhoto = doc.querySelector("#heroMount .photo-wrap");
+      if (prePhoto && !prePhoto.dataset.hydrated) {
+        prePhoto.dataset.hydrated = "true";
+        prePhoto.style.cursor = "pointer";
+        prePhoto.addEventListener("click", function () {
+          openLightbox(S.photo, S.photoAlt);
+        });
+        prePhoto.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openLightbox(S.photo, S.photoAlt);
+          }
+        });
+      }
+    }
 
-    if (reduce) { tspan.textContent = S.title; }
-    else {
-      var i = 0;
-      (function tick() { tspan.textContent = S.title.slice(0, ++i); if (i < S.title.length) setTimeout(tick, 38); })();
+    var activeTspan = doc.querySelector("#heroMount .typed span") || tspan;
+    if (activeTspan) {
+      if (reduce) {
+        activeTspan.textContent = S.title;
+      } else {
+        var i = 0;
+        activeTspan.textContent = "";
+        (function tick() {
+          activeTspan.textContent = S.title.slice(0, ++i);
+          if (i < S.title.length) setTimeout(tick, 38);
+        })();
+      }
     }
   })();
 
@@ -125,13 +300,33 @@
     return box;
   }
 
+  function prepareLogo(src, alt, boxCls) {
+    if (!src || isPh(src)) return null;
+    var box = el("div", { class: boxCls || "cert-logo-box", title: alt || "Official logo" });
+    var img = el("img", { src: src, alt: alt || "", class: "logo-img" });
+    img.onerror = function () {
+      box.style.display = "none";
+    };
+    box.appendChild(img);
+    return box;
+  }
+
   /* ---------- about ---------- */
-  mount("about", head("01", "ABOUT", "about-h", "About").concat([
-    el("p", { class: "about-text", text: C.about.text }),
-    el("div", { class: "facts" }, C.about.facts.map(function (f) {
-      return el("div", { class: "card fact" }, [el("span", { class: "big", text: f.big }), el("span", { class: "small", text: f.small })]);
-    }))
-  ]));
+  var aboutKids = head("01", "ABOUT", "about-h", "About");
+  if (C.about.heading) {
+    aboutKids.push(el("h3", { class: "about-lead", text: C.about.heading }));
+  }
+  if (C.about.paragraphs && C.about.paragraphs.length) {
+    C.about.paragraphs.forEach(function (p) {
+      aboutKids.push(el("p", { class: "about-para", text: p }));
+    });
+  } else if (C.about.text) {
+    aboutKids.push(el("p", { class: "about-text", text: C.about.text }));
+  }
+  aboutKids.push(el("div", { class: "facts" }, C.about.facts.map(function (f) {
+    return el("div", { class: "card fact" }, [el("span", { class: "big", text: f.big }), el("span", { class: "small", text: f.small })]);
+  })));
+  mount("about", aboutKids);
 
   /* ---------- featured ---------- */
   (function () {
@@ -225,13 +420,115 @@
   /* ---------- experience ---------- */
   mount("experience", head("04", "EXPERIENCE", "experience-h", "Experience").concat([
     el("ol", { class: "timeline" }, C.experience.map(function (x) {
-      return el("li", {}, [
+      var itemKids = [
         el("h3", { text: x.role }), el("div", { class: "org", text: x.org }),
         el("span", { class: "when", text: x.dates }),
         el("ul", {}, x.bullets.filter(function (b) { return !isPh(b); }).map(function (b) { return el("li", { text: b }); }))
-      ]);
+      ];
+      if (x.gallery && x.gallery.length) {
+        var gTitleText = (x.galleryTitle || "Showcase") + " (" + x.gallery.length + " Photos)";
+        var gHead = el("div", { class: "exp-gallery-head" }, [
+          el("span", { class: "exp-gallery-title", text: gTitleText }),
+          el("span", { class: "exp-gallery-hint", text: "⤢ Click photo to enlarge" })
+        ]);
+        var gScroll = el("div", { class: "exp-gallery-scroll" }, x.gallery.map(function (item, idx) {
+          var btn = el("button", {
+            type: "button",
+            class: "exp-gallery-item",
+            "aria-label": item.caption || ("View photo " + (idx + 1)),
+            title: item.caption || "Click to enlarge"
+          }, [
+            el("img", {
+              src: item.src,
+              alt: item.caption || (x.org + " photo"),
+              loading: "lazy"
+            }),
+            item.tag ? el("span", { class: "exp-gallery-badge", text: item.tag }) : null
+          ]);
+          btn.addEventListener("click", function () {
+            openLightbox(item.src, item.caption, x.gallery, idx);
+          });
+          return btn;
+        }));
+        itemKids.push(el("div", { class: "exp-gallery-wrap" }, [gHead, gScroll]));
+      }
+      return el("li", {}, itemKids);
     }))
   ]));
+
+  /* ---------- military ---------- */
+  if (C.military) {
+    var M = C.military;
+    var milLogo = prepareLogo(M.logo, M.logoAlt, "military-logo-box");
+    var milKids = head("04b", "MILITARY EXPERIENCE", "military-h", M.title || "Military Experience & Leadership");
+
+    var titleKids = [
+      el("h3", { text: M.position })
+    ];
+    if (M.rank) {
+      titleKids.push(el("span", { class: "mil-rank-badge", text: M.rank }));
+    }
+
+    var titleRow = el("div", { class: "military-title-row" }, titleKids);
+    var headCol = el("div", { class: "military-title-wrap" }, [
+      titleRow,
+      el("div", { class: "org", text: M.org + (M.branch ? " · " + M.branch : "") })
+    ]);
+
+    var headRow = [];
+    if (milLogo) headRow.push(milLogo);
+    headRow.push(headCol);
+
+    var bodyKids = [
+      el("div", { class: "military-header" }, headRow),
+      el("p", { class: "military-bg", text: M.background })
+    ];
+
+    if (M.highlights && M.highlights.length) {
+      var statsWrap = el("div", { class: "military-stats" }, M.highlights.map(function (h) {
+        return el("div", { class: "mil-stat-item" }, [
+          el("span", { class: "mil-stat-val", text: h.val }),
+          el("span", { class: "mil-stat-lbl", text: h.lbl })
+        ]);
+      }));
+      bodyKids.push(statsWrap);
+    }
+
+    bodyKids.push(el("div", { class: "military-attrs" }, [
+      el("div", { class: "attr-label", text: "Attributes Developed" }),
+      chips(M.attributes)
+    ]));
+
+    var milBody = el("div", { class: "military-body" }, bodyKids);
+    var cardKids = [milBody];
+
+    if (M.photo) {
+      var photoWrap = el("button", {
+        type: "button",
+        class: "military-photo-wrap",
+        "aria-label": "Enlarge military photo",
+        title: "Click to enlarge"
+      }, [
+        el("img", {
+          src: M.photo,
+          alt: M.photoAlt || "Mohamad Izzat Anis in Royal Malaysian Air Force (TUDM) Reserve Officer uniform",
+          class: "military-photo",
+          loading: "lazy"
+        }),
+        el("div", { class: "mil-photo-overlay" }),
+        el("div", { class: "mil-expand-hint", text: "⤢ Enlarge" }),
+        el("div", { class: "mil-photo-badge", text: "🎖 2nd Lt · Full Ceremonial Dress" })
+      ]);
+      photoWrap.addEventListener("click", function () {
+        openLightbox(M.photo, M.photoAlt);
+      });
+      cardKids.push(photoWrap);
+    }
+
+    var milCard = el("div", { class: "card military-card" + (M.photo ? " has-photo" : "") }, cardKids);
+    milKids.push(milCard);
+    mount("military", milKids);
+  }
 
   /* ---------- skills ---------- */
   mount("skills", head("05", "SKILLS", "skills-h", "Skills").concat(C.skills.map(function (g) {
@@ -241,26 +538,30 @@
   /* ---------- education ---------- */
   mount("education", head("06", "EDUCATION", "education-h", "Education").concat([
     el("div", { class: "grid2" }, C.education.map(function (e) {
-      var kids = [el("h3", { text: e.degree }), el("p", { class: "note", text: e.school })];
-      if (!isPh(e.dates)) kids.push(el("p", { class: "mono note", text: e.dates }));
-      if (!isPh(e.detail)) kids.push(el("p", { text: e.detail }));
-      return el("article", { class: "card" }, kids);
+      var kids = [];
+      var logoBox = prepareLogo(e.logo, e.logoAlt || (e.school ? e.school + " logo" : "Institution logo"), "edu-logo-box");
+      var titles = [
+        el("h3", { class: "edu-degree", text: e.degree }),
+        el("p", { class: "edu-school", text: e.school })
+      ];
+      var headerKids = [];
+      if (logoBox) headerKids.push(logoBox);
+      headerKids.push(el("div", { class: "edu-title-wrap" }, titles));
+      kids.push(el("div", { class: "edu-header" }, headerKids));
+
+      if (!isPh(e.dates)) kids.push(el("p", { class: "mono note edu-dates", text: e.dates }));
+      if (!isPh(e.detail)) kids.push(el("p", { class: "edu-detail", text: e.detail }));
+      return el("article", { class: "card edu-card" }, kids);
     }))
   ]));
 
   /* ---------- certifications ---------- */
-  function initials(s) {
-    if (isPh(s)) return "TR";
-    var w = s.replace(/&/g, " ").split(/\s+/).filter(Boolean);
-    return (w.length > 1 ? w[0][0] + w[1][0] : w[0].slice(0, 2)).toUpperCase();
-  }
-  function hue(s) { var h = 0; for (var i = 0; i < (s || "").length; i++) h = (h * 31 + s.charCodeAt(i)) % 360; return h; }
   function renderCertCard(c) {
     var topKids = [];
+    var logoBox = prepareLogo(c.logo, c.logoAlt || (c.issuer ? c.issuer + " logo" : "Certification logo"), "cert-logo-box");
+    if (logoBox) topKids.push(logoBox);
+
     if (!isPh(c.issuer)) {
-      var av = el("span", { class: "avatar", text: initials(c.issuer), "aria-hidden": "true" });
-      av.style.setProperty("--hue", hue(c.issuer));
-      topKids.push(av);
       topKids.push(el("div", {}, [
         el("div", { class: "issuer", text: c.issuer }),
         (c.date || c.year) ? el("div", { class: "yr", text: String(c.date || c.year) }) : null
@@ -322,20 +623,16 @@
   (function () {
     var K = C.contact;
     var formEndpoint = C.site.formEndpoint || C.formEndpoint || "";
-    var hasForm = !isPh(formEndpoint);
+    var hasForm = true;
 
     var btnsList = [];
     if (isUrl(S.linkedin)) {
       btnsList.push(ext(S.linkedin, "btn primary", ["LinkedIn ", icon(ICONS.ext, 14)]));
     }
 
-    var contactText = hasForm
-      ? (K.text || "The quickest way to reach me is LinkedIn or the form below. My resume is available on request.")
-      : "The quickest way to reach me is LinkedIn. My resume is available on request.";
-
     var leftKids = [
-      el("p", { class: "about-text", text: contactText }),
-      btnsList.length ? el("div", { class: "btns" }, btnsList) : null,
+      el("p", { class: "about-text", text: K.text || "Fill in the form and I'll get back to you. You can also find me on LinkedIn." }),
+      el("div", { class: "btns" }, btnsList),
       el("p", { class: "note", text: K.references })
     ];
     var left = el("div", {}, leftKids);
@@ -344,7 +641,7 @@
 
     if (hasForm) {
       function field(id, label, type, req, area) {
-        var inp = area ? el("textarea", { id: id, name: id, rows: 5 }) : el("input", { id: id, name: id, type: type, autocomplete: id === "name" ? "name" : id === "email" ? "email" : "organization" });
+        var inp = area ? el("textarea", { id: id, name: id, rows: 5 }) : el("input", { id: id, name: id, type: type, autocomplete: id === "name" ? "name" : id === "email" ? "email" : "off" });
         if (req) { inp.required = true; inp.setAttribute("aria-describedby", id + "-err"); }
         return el("div", {}, [el("label", { for: id, text: label + (req ? "" : " (optional)") }), inp, el("span", { class: "err", id: id + "-err", role: "alert" })]);
       }
@@ -353,43 +650,70 @@
         el("label", { for: "website", text: "Leave this field empty" }),
         el("input", { id: "website", name: "_gotcha", type: "text", tabindex: "-1", autocomplete: "off" })
       ]);
-      var submit = el("button", { class: "btn primary", type: "submit", text: "Send message" });
+      var submit = el("button", { class: "btn primary", type: "submit", text: "Submit Message" });
       var form = el("form", { novalidate: "", "aria-label": "Contact form" }, [
-        field("name", "Name", "text", true),
-        field("email", "Email", "email", true),
-        field("company", "Company", "text", false),
+        field("name", "Full Name", "text", true),
+        field("email", "Email Address", "email", true),
+        field("subject", "Subject", "text", true),
         field("message", "Message", "text", true, true),
         hp, submit, status
       ]);
-      function say(msg, ok) { status.hidden = false; status.className = "status " + (ok ? "ok" : "bad"); status.textContent = msg; }
+      function say(msg, type) {
+        status.hidden = false;
+        status.className = "status " + (type || "ok");
+        status.textContent = msg;
+      }
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         var bad = false;
-        ["name", "email", "message"].forEach(function (id) {
+        ["name", "email", "subject", "message"].forEach(function (id) {
           var i = form.elements[id], v = i.value.trim(), m = "";
-          if (!v) m = "This field is required.";
-          else if (id === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) m = "Enter a valid email address.";
-          else if (id === "message" && v.length < 10) m = "Please write at least 10 characters.";
+          if (!v) {
+            if (id === "name") m = "Please enter your full name.";
+            else if (id === "email") m = "Please enter your email address.";
+            else if (id === "subject") m = "Please enter a subject.";
+            else if (id === "message") m = "Please write a message.";
+          } else if (id === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+            m = "Please enter a valid email address.";
+          } else if (id === "message" && v.length < 10) {
+            m = "Please write at least 10 characters.";
+          }
           doc.getElementById(id + "-err").textContent = m;
           i.setAttribute("aria-invalid", m ? "true" : "false");
           if (m && !bad) { i.focus(); bad = true; }
         });
         if (bad) return;
-        if (form.elements._gotcha.value) { say("Thanks, message sent.", true); form.reset(); return; } // silently drop bots
+        if (form.elements._gotcha.value) { say("Thank you! Your message has been sent successfully.", "ok"); form.reset(); return; }
+
+        if (!formEndpoint || isPh(formEndpoint) || formEndpoint.indexOf("[[") !== -1) {
+          say("The contact form is currently in demonstration mode. Please configure your Formspree endpoint in assets/js/content.js.", "warn");
+          return;
+        }
+
         submit.disabled = true;
+        submit.textContent = "Sending...";
         fetch(formEndpoint, {
           method: "POST",
           headers: { "Accept": "application/json", "Content-Type": "application/json" },
           body: JSON.stringify({
             name: form.elements.name.value.trim(),
             email: form.elements.email.value.trim(),
-            company: form.elements.company.value.trim(),
+            subject: form.elements.subject.value.trim(),
             message: form.elements.message.value.trim()
           })
         })
-          .then(function (r) { if (!r.ok) throw new Error("bad"); say("Thanks! Your message was sent. I'll get back to you soon.", true); form.reset(); })
-          .catch(function () { say("Sorry, the message could not be sent. Please reach out via LinkedIn.", false); })
-          .then(function () { submit.disabled = false; });
+          .then(function (r) {
+            if (!r.ok) throw new Error("bad");
+            say("Thank you! Your message has been sent successfully. I will get back to you soon.", "ok");
+            form.reset();
+          })
+          .catch(function () {
+            say("Sorry, an error occurred while sending your message. Please reach out via LinkedIn.", "bad");
+          })
+          .then(function () {
+            submit.disabled = false;
+            submit.textContent = "Submit Message";
+          });
       });
 
       contentKids.push(el("div", { class: "card" }, [form]));
@@ -401,6 +725,126 @@
   })();
 
   doc.getElementById("footerText").textContent = "© " + S.year + " " + S.name + ". " + C.footer;
+
+  /* ---------- Hydrate pre-rendered elements ---------- */
+  // 1. SOP Pipeline stages
+  var pipeCap = doc.getElementById("pipeCap");
+  var pipeBtns = doc.querySelectorAll("#featured .pipe button");
+  if (pipeBtns.length && C.featured && C.featured.pipeline) {
+    var Fpipe = C.featured.pipeline;
+    function setPreStage(idx) {
+      pipeBtns.forEach(function (b, j) {
+        b.setAttribute("aria-pressed", j === idx ? "true" : "false");
+      });
+      if (pipeCap && Fpipe[idx]) {
+        pipeCap.textContent = Fpipe[idx].name + ": " + Fpipe[idx].caption;
+      }
+    }
+    pipeBtns.forEach(function (b, i) {
+      b.addEventListener("click", function () { setPreStage(i); });
+      b.addEventListener("mouseenter", function () { setPreStage(i); });
+      b.addEventListener("focus", function () { setPreStage(i); });
+    });
+  }
+
+  // 2. Experience photo galleries
+  var gWraps = doc.querySelectorAll("#experience .exp-gallery-wrap");
+  var expWithGallery = (C.experience || []).filter(function (x) { return x.gallery && x.gallery.length; });
+  gWraps.forEach(function (wrap, gIdx) {
+    var expData = expWithGallery[gIdx];
+    if (!expData) return;
+    var buttons = wrap.querySelectorAll(".exp-gallery-item");
+    buttons.forEach(function (btn, bIdx) {
+      btn.addEventListener("click", function () {
+        openLightbox(expData.gallery[bIdx].src, expData.gallery[bIdx].caption, expData.gallery, bIdx);
+      });
+    });
+  });
+
+  // 3. Military uniform photo
+  var milPhotoWrap = doc.querySelector(".military-photo-wrap");
+  if (milPhotoWrap && C.military && C.military.photo) {
+    milPhotoWrap.addEventListener("click", function () {
+      openLightbox(C.military.photo, C.military.photoAlt);
+    });
+  }
+
+  // 4. Contact Form submission
+  var contactForm = doc.querySelector("#contact form");
+  if (contactForm && !contactForm.dataset.hydrated) {
+    contactForm.dataset.hydrated = "true";
+    var statusEl = doc.getElementById("contactStatus") || contactForm.querySelector(".status");
+    function sayContact(msg, type) {
+      if (statusEl) {
+        statusEl.hidden = false;
+        statusEl.className = "status " + (type || "ok");
+        statusEl.textContent = msg;
+      }
+    }
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var bad = false;
+      ["name", "email", "subject", "message"].forEach(function (id) {
+        var i = contactForm.elements[id];
+        if (!i) return;
+        var v = i.value.trim(), m = "";
+        if (!v) {
+          if (id === "name") m = "Please enter your full name.";
+          else if (id === "email") m = "Please enter your email address.";
+          else if (id === "subject") m = "Please enter a subject.";
+          else if (id === "message") m = "Please write a message.";
+        } else if (id === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+          m = "Please enter a valid email address.";
+        } else if (id === "message" && v.length < 10) {
+          m = "Please write at least 10 characters.";
+        }
+        var errEl = doc.getElementById(id + "-err");
+        if (errEl) errEl.textContent = m;
+        i.setAttribute("aria-invalid", m ? "true" : "false");
+        if (m && !bad) { i.focus(); bad = true; }
+      });
+      if (bad) return;
+      if (contactForm.elements._gotcha && contactForm.elements._gotcha.value) {
+        sayContact("Thank you! Your message has been sent successfully.", "ok");
+        contactForm.reset();
+        return;
+      }
+      var formEndpoint = C.site.formEndpoint || C.formEndpoint || "";
+      if (!formEndpoint || isPh(formEndpoint) || formEndpoint.indexOf("[[") !== -1) {
+        sayContact("The contact form is currently in demonstration mode. Please configure your Formspree endpoint in assets/js/content.js.", "warn");
+        return;
+      }
+      var submitBtn = contactForm.querySelector("button[type='submit']");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending...";
+      }
+      fetch(formEndpoint, {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: contactForm.elements.name.value.trim(),
+          email: contactForm.elements.email.value.trim(),
+          subject: contactForm.elements.subject.value.trim(),
+          message: contactForm.elements.message.value.trim()
+        })
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error("bad");
+          sayContact("Thank you! Your message has been sent successfully. I will get back to you soon.", "ok");
+          contactForm.reset();
+        })
+        .catch(function () {
+          sayContact("Sorry, an error occurred while sending your message. Please reach out via LinkedIn.", "bad");
+        })
+        .then(function () {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit Message";
+          }
+        });
+    });
+  }
 
   /* ---------- nav, theme ---------- */
   var menuBtn = doc.getElementById("menuBtn"), links = doc.getElementById("navLinks");
@@ -446,4 +890,15 @@
     }, { rootMargin: "-40% 0px -55% 0px" });
     Object.keys(anchors).forEach(function (k) { var s = doc.getElementById(k); if (s) spy.observe(s); });
   }
+
+  /* ---------- back to top smooth scroll ---------- */
+  doc.querySelectorAll('a[href="#top"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (window.history && window.history.replaceState) {
+        history.replaceState(null, null, window.location.pathname + window.location.search);
+      }
+    });
+  });
 })();

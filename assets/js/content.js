@@ -3,27 +3,34 @@
 // Change these links in one place.
 var LINKEDIN_CERTS_URL = "https://www.linkedin.com/in/izzatanis/details/certifications/";
 var LINKEDIN_HONORS_URL = "https://www.linkedin.com/in/izzatanis/details/honors/";
-var FORM_ENDPOINT = "[[FORM_ENDPOINT]]";
+var FORMSPREE_ENDPOINT = "[[FORMSPREE_ENDPOINT]]";
 
 window.CONTENT = {
-  formEndpoint: FORM_ENDPOINT,
+  formEndpoint: FORMSPREE_ENDPOINT,
   links: { linkedinCerts: LINKEDIN_CERTS_URL, linkedinHonors: LINKEDIN_HONORS_URL },
   site: {
     name: "Mohamad Izzat Anis",
-    title: "Cybersecurity Analyst | SOC, OSINT & Security Automation",
+    title: "Cybersecurity Graduate | Cisco CyberOps Associate | SC-900 | AWS re/Start | Google Cybersecurity | Google AI | OPSWAT",
     oneLiner: "I build automation that turns security noise into actionable detection.",
-    location: "Selangor, Malaysia",
-    openToRelocate: true,
+    location: "Federal Territory of Kuala Lumpur, Malaysia",
+    openToRelocate: false,
     status: "Open to opportunities",
     photo: "./assets/img/photo.jpg",
     photoAlt: "Portrait of Mohamad Izzat Anis",
     linkedin: "https://linkedin.com/in/izzatanis",
     github: "[[GITHUB_URL]]",
-    formEndpoint: FORM_ENDPOINT,
+    formEndpoint: FORMSPREE_ENDPOINT,
     year: 2026
   },
 
   about: {
+    heading: "Driven by curiosity. Guided by discipline. Focused on making an impact.",
+    paragraphs: [
+      "I'm an individual with a strong interest in cybersecurity, technology and continuous learning. I enjoy exploring how systems work, understanding security challenges and investigating the details behind potential threats.",
+      "My journey has also been shaped by a military background. During my university years, I underwent three years of military training before continuing as a Reserve Officer with the Royal Malaysian Air Force (TUDM). This experience has contributed to my appreciation of discipline, teamwork, responsibility and working effectively under pressure.",
+      "I believe that professional growth comes from a combination of technical knowledge, practical experience and the willingness to keep improving. Whether investigating security events, learning new technologies or working alongside a team, I approach every challenge with curiosity, commitment and a readiness to learn.",
+      "I'm continuously working towards becoming a well-rounded cybersecurity professional who can contribute both technically and professionally."
+    ],
     text: "First Class Honours Cybersecurity graduate (3.82 CGPA) and commissioned 2nd Lieutenant with a disciplined, mission-first approach to security work. I have hands-on experience in security operations, threat triage and OSINT investigations, and I enjoy replacing repetitive manual checks with Python automation. I am looking to grow in security operations and detection engineering in a team where I can keep learning and contribute from day one.",
     facts: [
       { big: "3.82", small: "CGPA" },
@@ -126,6 +133,24 @@ window.CONTENT = {
         "Monitored and triaged network, endpoint and DLP alerts using Splunk, CrowdStrike, Fortinet and Forcepoint.",
         "Built an automated monitoring dashboard with SOC alerting that replaced daily manual server checks.",
         "Built an SSL/TLS certificate expiry tracker, and designed a DLP risk analytics dashboard for the SOC and IT Operations teams."
+      ],
+      galleryTitle: "CYBERSECURITY & SOC OPERATIONS SHOWCASE",
+      gallery: [
+        {
+          src: "./assets/img/muamalat/01_bm_soc_team.jpg",
+          tag: "SOC & Security Team",
+          caption: "Bank Muamalat Malaysia Berhad cybersecurity operations and IT security team at the office"
+        },
+        {
+          src: "./assets/img/muamalat/02_bm_team_leads.jpg",
+          tag: "Security Leadership",
+          caption: "With cybersecurity team leads and supervisors at Bank Muamalat Malaysia Berhad"
+        },
+        {
+          src: "./assets/img/muamalat/03_bm_colleagues.jpg",
+          tag: "SOC Operations",
+          caption: "Junior cybersecurity analyst colleagues at Bank Muamalat Malaysia Berhad"
+        }
       ]
     },
     {
@@ -137,6 +162,39 @@ window.CONTENT = {
         "Triaged and investigated brand infringement and digital piracy cases and preserved digital evidence.",
         "Investigated across the surface and dark web with Maltego and Shodan, and supported alert investigation using VirusTotal and AbuseIPDB.",
         "Prepared investigation reports for leadership."
+      ],
+      galleryTitle: "CYBERSECURITY & OSINT OPERATIONS SHOWCASE",
+      gallery: [
+        {
+          src: "./assets/img/vulsan/01_vx_sentinel_podcast.jpg",
+          tag: "VX Sentinel Podcast",
+          caption: "Panelist on VX Sentinel Podcast (Episode 1: Sentiment Analysis & Threat Intelligence in Malaysia's Digital Era)"
+        },
+        {
+          src: "./assets/img/vulsan/02_vx_team_hq.jpg",
+          tag: "Vulsan X Team",
+          caption: "Cybersecurity and threat intelligence operations team at Vulsan X Cydef HQ"
+        },
+        {
+          src: "./assets/img/vulsan/03_vx_dpo_training.jpg",
+          tag: "DPO Training",
+          caption: "Completion of Vulsan X Data Protection Officer (DPO) training and data privacy compliance"
+        },
+        {
+          src: "./assets/img/vulsan/04_vx_team_meeting.jpg",
+          tag: "Operations Sync",
+          caption: "Internal OSINT operations and technical development team discussion at Vulsan X"
+        },
+        {
+          src: "./assets/img/vulsan/05_vx_appreciation.jpg",
+          tag: "Company Recognition",
+          caption: "Year-end token of appreciation and recognition at Vulsan X Cydef"
+        },
+        {
+          src: "./assets/img/vulsan/06_vx_team_outing.jpg",
+          tag: "Team Outing",
+          caption: "Vulsan X cybersecurity team retreat and outdoor team-building activity"
+        }
       ]
     },
     {
@@ -147,9 +205,98 @@ window.CONTENT = {
         "Led development of DIETMATE and JOMSCAN.",
         "Supervised the team, budget and partnerships, and mentored members.",
         "Delivered cybersecurity awareness workshops."
+      ],
+      galleryTitle: "STARTUP & INNOVATION SHOWCASE",
+      gallery: [
+        {
+          src: "./assets/img/cybersphere/cs-12-mranti-demo-day.jpg",
+          tag: "Demo Day 2025",
+          caption: "MyNext Innovate Demo Day 2025 at MRANTI Park, Kuala Lumpur (TalentCorp, Beyond4, Cradle, MyStartup)"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-03-beyond4-award.jpg",
+          tag: "Beyond4 Award",
+          caption: "Dietmate team receiving award on stage at Beyond4 Startups Accelerator"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-04-beyond4-pitch.jpg",
+          tag: "Stage Pitch",
+          caption: "Pitching and presenting Dietmate to judges on stage at Beyond4"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-07-booth26-exhibition.jpg",
+          tag: "Exhibition & Medals",
+          caption: "Booth 26 exhibition: DIETMATE & JOMSCAN live app demos, showcase posters and medals"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-01-dice-ceremony.jpg",
+          tag: "DICE 2.0 Ceremony",
+          caption: "DICE 2.0 (Digital Innovation Creativepreneur) Closing Ceremony with Ministry of Higher Education"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-02-dice-portrait.jpg",
+          tag: "DICE 2.0 Lead",
+          caption: "Mohamad Izzat Anis, Operations & Technical Lead at DICE 2.0"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-05-celcomdigi-mentorship.jpg",
+          tag: "CelcomDigi Session",
+          caption: "Mentorship and industry pitching session with CelcomDigi leaders"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-06-leadership-showcase.jpg",
+          tag: "VIP Showcase",
+          caption: "Product showcase booth with university leadership and VIP guests"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-08-team-advisor.jpg",
+          tag: "Team & Advisor",
+          caption: "Cybersphere Solution startup team with academic advisor"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-09-mynext-stage.jpg",
+          tag: "MyNext Innovate",
+          caption: "MyNext Innovate Certificate of Completion presented on stage"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-10-mynext-selfie.jpg",
+          tag: "Completion Award",
+          caption: "Celebrating MyNext Innovate Certificate of Completion with industry partners"
+        },
+        {
+          src: "./assets/img/cybersphere/cs-11-dietmate-booth.jpg",
+          tag: "Dietmate Booth",
+          caption: "Dietmate exhibition booth and startup roll-up banner presentation"
+        }
       ]
     }
   ],
+
+  military: {
+    title: "Military Experience & Leadership",
+    rank: "2nd Lieutenant",
+    position: "Reserve Officer",
+    branch: "PSSTUDM",
+    org: "Royal Malaysian Air Force (TUDM)",
+    background: "Completed three years of officer cadet military training during university and currently serve as a commissioned Reserve Officer with the Royal Malaysian Air Force.",
+    highlights: [
+      { val: "2nd Lieutenant", lbl: "Commissioned Rank" },
+      { val: "3 Years", lbl: "Cadet Training" },
+      { val: "PSSTUDM", lbl: "RMAF Reserve" }
+    ],
+    attributes: [
+      "Discipline",
+      "Leadership",
+      "Teamwork",
+      "Accountability",
+      "Adaptability",
+      "Responsibility"
+    ],
+    logo: "./assets/logos/tudm.svg",
+    logoAlt: "Royal Malaysian Air Force (TUDM) crest",
+    photo: "./assets/img/military.jpg",
+    photoAlt: "Mohamad Izzat Anis in Royal Malaysian Air Force (TUDM) Reserve Officer uniform"
+  },
 
   skills: [
     { group: "Security tools", items: ["Splunk (SIEM)", "CrowdStrike Falcon (EDR)", "Microsoft Defender", "Sentinel (fundamentals)", "Fortinet", "Forcepoint DLP", "Maltego", "Shodan", "VirusTotal", "AbuseIPDB", "Burp Suite", "Nmap", "Kali Linux", "OWASP ZAP"] },
@@ -164,13 +311,17 @@ window.CONTENT = {
       degree: "Bachelor of Computer Science (Cybersecurity) with Honours",
       school: "UMPSA",
       dates: "Oct 2022 - Mar 2026",
-      detail: "CGPA 3.82 | Dean's List, multiple semesters"
+      detail: "CGPA 3.82 | Dean's List, multiple semesters",
+      logo: "./assets/logos/umpsa.png",
+      logoAlt: "Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA) logo"
     },
     {
       degree: "Diploma in Information Technology (Digital Technology)",
       school: "Politeknik Seberang Perai",
       dates: "",
-      detail: "CGPA 3.68"
+      detail: "CGPA 3.68",
+      logo: "./assets/logos/psp.png",
+      logoAlt: "Politeknik Seberang Perai (PSP) logo"
     }
   ],
 
@@ -184,12 +335,14 @@ window.CONTENT = {
         {
           title: "Microsoft Certified: Security, Compliance, and Identity Fundamentals (SC-900)",
           issuer: "Microsoft", date: "Mar 2025", type: "Certification",
+          logo: "./assets/logos/microsoft.svg", logoAlt: "Microsoft logo",
           onLinkedIn: true,
           verifyUrl: "https://learn.microsoft.com/api/credentials/share/en-gb/MOHAMADIZZATANISBINEUSOFF-3463/4FB0B4F470233C9B?sharingId=CB5E824ED589E5C3"
         },
         {
           title: "Cisco Certified CyberOps Associate",
           issuer: "Cisco Networking Academy", date: "Jul 2024", type: "Certification",
+          logo: "./assets/logos/cisco.svg", logoAlt: "Cisco Networking Academy logo",
           note: "Valid until Jul 2027.",
           onLinkedIn: true,
           verifyUrl: "[[CREDLY_BADGE_URL]]"
@@ -202,28 +355,33 @@ window.CONTENT = {
         {
           title: "Google Cybersecurity Professional Certificate",
           issuer: "Google (Coursera)", date: "Aug 2026", type: "Professional Certificate",
+          logo: "./assets/logos/google.svg", logoAlt: "Google logo",
           verifyUrl: "https://www.coursera.org/account/accomplishments/specialization/OY8F5YYQUV2Z"
         },
         {
           title: "AWS re/Start Graduate",
           issuer: "Amazon Web Services", date: "Aug 2026", type: "Programme",
+          logo: "./assets/logos/aws.svg", logoAlt: "Amazon Web Services logo",
           verifyUrl: "https://www.credly.com/badges/03eeb9bb-0681-4bc0-8dbd-8a646c46f348"
         },
         {
           title: "Google AI Professional Certificate",
           issuer: "Google (Coursera)", date: "Jun 2026", type: "Professional Certificate",
+          logo: "./assets/logos/google.svg", logoAlt: "Google logo",
           onLinkedIn: true,
           verifyUrl: "[[GOOGLE_AI_COURSERA_URL]]"
         },
         {
           title: "APAC Cybersecurity Fund",
           issuer: "Asia Foundation & Google.org", date: "Jun 2025", type: "Programme",
+          logo: "./assets/logos/google.svg", logoAlt: "Google.org logo",
           onLinkedIn: true,
           verifyUrl: ""
         },
         {
           title: "OPSWAT Academy Graduate (Multi-Domain Security Bundle)",
           issuer: "OPSWAT Academy", year: null, type: "Programme",
+          logo: "./assets/logos/opswat.svg", logoAlt: "OPSWAT Academy logo",
           verifyUrl: "[[OPSWAT_VERIFY_URL or empty]]"
         },
         {
@@ -240,6 +398,7 @@ window.CONTENT = {
         {
           title: "Hack The Box University CTF 2023 (Brains & Bytes)",
           issuer: "Hack The Box", date: "Dec 2023", type: "Competition",
+          logo: "./assets/logos/hackthebox.svg", logoAlt: "Hack The Box logo",
           note: "Ranked 390th globally of ~1,000 universities, representing UMPSA.",
           onLinkedIn: true,
           verifyUrl: ""

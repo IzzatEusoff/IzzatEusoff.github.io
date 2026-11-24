@@ -1,0 +1,77 @@
+# Mohamad Izzat Anis - Cybersecurity Analyst Portfolio
+> First Class Honours Cybersecurity Graduate (3.82 CGPA), Commissioned 2nd Lieutenant (PSSTUDM / Royal Malaysian Air Force), and Cybersecurity Analyst specializing in SOC Operations, Threat Intelligence (OSINT), and Security Automation.
+
+## Personal Information
+- Full Name: Mohamad Izzat Anis
+- Current Role: Junior Cybersecurity Analyst at Bank Muamalat Malaysia Berhad (K-Youth)
+- Location: Federal Territory of Kuala Lumpur, Malaysia
+- Professional Profile: https://izzateusoff.github.io/
+- LinkedIn: https://www.linkedin.com/in/izzatanis
+
+## Professional Summary
+First Class Honours Cybersecurity graduate (3.82 CGPA) and commissioned 2nd Lieutenant with a disciplined, mission-first approach to security work. Hands-on experience in security operations, threat triage, and OSINT investigations, with an emphasis on replacing repetitive manual checks with Python automation. Focused on security operations, detection engineering, and incident response.
+
+## Core Technical Competencies
+- Security Tools: Splunk (SIEM), CrowdStrike Falcon (EDR), Microsoft Defender, Microsoft Sentinel (fundamentals), Fortinet, Forcepoint DLP, Maltego, Shodan, VirusTotal, AbuseIPDB, Burp Suite, Nmap, Kali Linux, OWASP ZAP.
+- Core Security Operations: Log analysis, endpoint protection, EDR, IDS/IPS, Vulnerability Management, System Hardening, Threat detection (OSINT), Incident triage and response, Root cause analysis, Forensic metadata extraction.
+- Automation & Engineering: Python, PowerShell, WinRM (HTTPS), REST API integration, Flask, Bash, Selenium, Pandas, Workflow automation.
+- Governance & Compliance: NIST Cybersecurity Framework (CSF), ISO 27001, PDPA, GDPR.
+- Professional: Technical reporting, Stakeholder engagement, Crisis response, Project delivery.
+
+## Key Work Experience
+1. Junior Cybersecurity Analyst - Bank Muamalat Malaysia Berhad (K-Youth) (Jun 2026 - Oct 2026)
+   - Monitored and triaged network, endpoint and DLP alerts using Splunk, CrowdStrike, Fortinet and Forcepoint.
+   - Built an automated monitoring dashboard with SOC alerting that replaced daily manual server checks.
+   - Built an SSL/TLS certificate expiry tracker, and designed a DLP risk analytics dashboard for the SOC and IT Operations teams.
+
+2. OSINT Technical Operation Support | Cybersecurity Intern - Vulsan X Cydef Sdn. Bhd. (Mar 2025 - Mar 2026)
+   - AI-assisted Python crawler that automated threat data collection, reducing manual investigation effort by 90%.
+   - Triaged and investigated brand infringement and digital piracy cases and preserved digital evidence.
+   - Investigated across the surface and dark web with Maltego and Shodan, and supported alert investigation using VirusTotal and AbuseIPDB.
+   - Prepared investigation reports for leadership.
+
+3. Operations & Technical Lead - Cybersphere Solution (university-incubated startup) (Apr 2023 - Mar 2025)
+   - Led development of DIETMATE and JOMSCAN mobile applications.
+   - Supervised the team, budget and partnerships, and mentored members.
+   - Delivered cybersecurity awareness workshops. Won multiple national competition awards.
+
+## Military Leadership & Service
+- Rank: 2nd Lieutenant, Reserve Officer
+- Branch: PSSTUDM, Royal Malaysian Air Force (TUDM)
+- Background: Completed three years of rigorous officer cadet military training during university and currently serve as a commissioned Reserve Officer with the Royal Malaysian Air Force.
+- Attributes Developed: Discipline, Leadership, Teamwork, Accountability, Adaptability, Responsibility.
+
+## Education
+1. Bachelor of Computer Science (Cybersecurity) with Honours
+   - Institution: Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)
+   - Duration: Oct 2022 - Mar 2026
+   - Performance: CGPA 3.82 | First Class Honours | Dean's List (multiple semesters)
+2. Diploma in Information Technology (Digital Technology)
+   - Institution: Politeknik Seberang Perai (PSP)
+   - Performance: CGPA 3.68
+
+## Key Industry Certifications
+- Microsoft Certified: Security, Compliance, and Identity Fundamentals (SC-900) - Microsoft (Mar 2025)
+- Cisco Certified CyberOps Associate - Cisco Networking Academy (Jul 2024, Valid until Jul 2027)
+- Google Cybersecurity Professional Certificate - Google / Coursera (Aug 2026)
+- AWS re/Start Graduate - Amazon Web Services (Aug 2026)
+- Google AI Professional Certificate - Google / Coursera (Jun 2026)
+- APAC Cybersecurity Fund - Asia Foundation & Google.org (Jun 2025)
+- OPSWAT Academy Graduate (Multi-Domain Security Bundle) - OPSWAT Academy
+- Hack The Box University CTF 2023 (Brains & Bytes) - Ranked 390th globally of ~1,000 universities representing UMPSA
+
+## Featured Case Study
+- Title: Combating Digital Piracy Using OSINT: An SOP-Based Case Study (Final Year Project with Vulsan X Cydef)
+- Overview: Designed a Standard Operating Procedure (SOP) for investigating pirated film content across social platforms (Identification, Collection, Documentation, Analysis, Preservation, Reporting, Post-Reporting Follow-Up), tracking illicit distribution of an international film leak across major platforms.
+
+## Portfolio Section Deep Links
+- [About Me](https://izzateusoff.github.io/#about)
+- [Featured Project](https://izzateusoff.github.io/#featured)
+- [Projects](https://izzateusoff.github.io/#projects)
+- [Work Experience](https://izzateusoff.github.io/#experience)
+- [Military Leadership](https://izzateusoff.github.io/#military)
+- [Skills Matrix](https://izzateusoff.github.io/#skills)
+- [Education](https://izzateusoff.github.io/#education)
+- [Certifications](https://izzateusoff.github.io/#certifications)
+- [Awards & Recognition](https://izzateusoff.github.io/#awards)
+- [Contact Me](https://izzateusoff.github.io/#contact)
